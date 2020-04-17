@@ -3,7 +3,7 @@
 `twsent` é um pacote de utilizado no [Núcleo](https://nucleo.jor.br/)/[Volt Data Lab](https://www.voltdata.info/) para análise de sentimento de tweets coletados com `Rtweet`.
 O processo de coleta está descrito [aqui](https://gist.github.com/voltdatalab/a342c1179284deafa5c508dad33373f5).
 
-## Instação
+## Instalação
 O pacote pode ser instalado diretamente por este repositório.
 ```
 if (!require("devtools")) install.packages("devtools")
