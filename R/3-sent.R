@@ -1,3 +1,4 @@
+library(magrittr)
 
 tw_sent_base <- function(tw) {
   # Léxicos

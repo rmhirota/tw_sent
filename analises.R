@@ -1,4 +1,6 @@
-
+source("R/1-import_tidy.R")
+source("R/2-explore.R")
+source("R/3-sent.R")
 
 fs::dir_create("data-raw") # Guardar o csv aqui
 fs::dir_create("data")
