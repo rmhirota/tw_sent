@@ -17,18 +17,15 @@ tw_hashtags(tweets)
 tw_urls(tweets)
 
 tw_sent <- tw_sent_base(tweets)
+readr::write_rds(tw_sent, "data/tw_sent.rds")
 
 
 # 10 tweets mais positivos e negativos
-tw_pos_neg(tweets, tw_sent, "positivo") %>% dplyr::glimpse()
-tw_pos_neg(tweets, tw_sent, "negativo") %>% dplyr::glimpse()
+tw_pos_neg(tweets, tw_sent, "positivo") %>%
+  with(status_url) %>% paste(sep = "\n") %>% clipr::write_clip()
+tw_pos_neg(tweets, tw_sent, "negativo") %>%
+  with(status_url) %>% paste(sep = "\n") %>% clipr::write_clip()
 
-
-# Juntando informações de sentimento aos dados dos tweets
-tw_fim <- tweets %>%
-  dplyr::inner_join(
-  tw_sent %>% dplyr::select(id, sentiment = tw_sentiment_op),
-  by = "id")
 
 
 sent_hora(tw_fim, "Mandetta")

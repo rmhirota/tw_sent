@@ -1,7 +1,13 @@
-library(magrittr)
 
-
-tidy_tweets <- function(arquivo_csv, path_tidy) {
+#' Arruma base de tweets
+#'
+#' @param arquivo_csv Arquivo csv com metadados do Twitter
+#' @param path_tidy Pasta em que será salvo o objeto rds com a base arrumada
+#'
+#' @return cria base tidy em data/
+#'
+#' @export
+tidy_tweets <- function(arquivo_csv, path_tidy = "data") {
   tweets <- data.table::fread(arquivo_csv, colClasses = "character") %>%
     janitor::clean_names() %>%
     dplyr::select(ends_with("id"), created_at, screen_name, starts_with("is"),
@@ -23,9 +29,11 @@ tidy_tweets <- function(arquivo_csv, path_tidy) {
   if (nrow(erro) > 0) {
     cat("Algumas ids estão repetidas e foram filtradas da base.\nAs seguintes ids foram retiradas: \n")
     erro$id %>% paste(sep = "\n") %>% cat()
-    tweets <- tweets %>% filter(!id %in% erro$id)
+    tweets <- tweets %>% dplyr::filter(!id %in% erro$id)
   }
-  readr::write_rds(tweets, paste0(path_tidy, "/tweets_tidy.rds"))
-
+  readr::write_rds(tweets, paste0(
+    path_tidy,
+    stringr::str_remove(
+      stringr::str_extract(arquivo_csv, stringr::regex("/.*\\.csv$")), ".csv"), "_tidy.rds"))
 }
 

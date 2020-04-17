@@ -1,5 +1,11 @@
-library(magrittr)
 
+#' Calcula pontuação de sentimento de tweets
+#'
+#' @param tw base limpa de tweets criada usando tidy_tweets
+#'
+#' @return df com tweets e valores de sentimento
+#'
+#' @export
 tw_sent_base <- function(tw) {
   # Léxicos
   op30 <- lexiconPT::oplexicon_v3.0 %>%
@@ -38,7 +44,15 @@ tw_sent_base <- function(tw) {
   return(tweets_unnested)
 }
 
-
+#' Lista tweets mais positivos ou mais negativos
+#'
+#' @param tweets base limpa de tweets criada usando tidy_tweets
+#' @param tw_sent base com valores de sentimento obtida por tw_sent_base
+#' @param sent "positivo" ou "negativo"
+#'
+#' @return df com 10 tweets mais positivos/negativos
+#'
+#' @export
 tw_pos_neg <- function(tweets, tw_sent, sent = "positivo") {
   most_pos <- tw_sent %>%
     dplyr::arrange(desc(most_pos)) %>%
@@ -54,6 +68,33 @@ tw_pos_neg <- function(tweets, tw_sent, sent = "positivo") {
 }
 
 
+
+#' Juntan informações de sentimento aos dados dos tweets
+#'
+#' @param tweets base limpa de tweets criada usando tidy_tweets
+#' @param tw_sent base com valores de sentimento gerada por tw_sent_base
+#' @param path_arq path e nome do arquivo rds que será salvo
+#'
+#' @return
+#'
+#' @export
+agrupa_tw_sent <- function(tweets, tw_sent, path_arq = "data/tw_fim") {
+  tweets %>%
+  dplyr::inner_join(
+    tw_sent %>% dplyr::select(id, sentiment = tw_sentiment_op),
+    by = "id")
+  readr::write_rds(tw_fim, sprintf("%s.rds", path_arq))
+}
+
+
+#' Cria gráfico com média de sentimento por hora
+#'
+#' @param tweets_fim base agrupada de tweets criada usando agrupa_tw_sent
+#' @param tema string indicando palavrs(s)-chave utilizada(s) na coleta dos tweets
+#'
+#' @return gráfico ggplot com a média de sentimento por hora
+#'
+#' @export
 sent_hora <- function(tweets_fim, tema) {
   tweets_fim %>%
     dplyr::mutate(datahora = lubridate::floor_date(created_at, "hour")) %>%
@@ -69,7 +110,14 @@ sent_hora <- function(tweets_fim, tema) {
 }
 
 
-# Quantidade de tweets positivos e quantidade de tweets negativos
+#' Cria gráfico com total de tweets positivos e negativos por hora
+#'
+#' @param tweets_fim base agrupada de tweets criada usando agrupa_tw_sent
+#' @param tema string indicando palavrs(s)-chave utilizada(s) na coleta dos tweets
+#'
+#' @return gráfico ggplot com a quantidade de tweets positivos e tweets negativos por hora
+#'
+#' @export
 pos_neg_hora <- function(tweets_fim, tema) {
   tweets_fim %>%
     dplyr::mutate(datahora = lubridate::floor_date(created_at, "hour")) %>%
@@ -86,7 +134,15 @@ pos_neg_hora <- function(tweets_fim, tema) {
 }
 
 
-# Proporção de tweets positivos sobre quantidade de tweets negativos
+#
+#' Cria gráfico com proporção de tweets positivos sobre quantidade de tweets negativos
+#'
+#' @param tweets_fim base agrupada de tweets criada usando agrupa_tw_sent
+#' @param tema string indicando palavrs(s)-chave utilizada(s) na coleta dos tweets
+#'
+#' @return gráfico ggplot com a proporção de tweets positivos sobre quantidade de tweets negativos por hora
+#'
+#' @export
 prop_pos <- function(tweets_fim, tema) {
   tweets_fim %>%
     dplyr::mutate(datahora = lubridate::floor_date(created_at, "hour")) %>%

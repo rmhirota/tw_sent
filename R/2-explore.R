@@ -1,8 +1,12 @@
-library(magrittr)
 
-
-# Quantidade de tweets por tempo
-
+#' Cria gráfico com o total de tweets por hora
+#'
+#' @param tw base limpa de tweets criada usando tidy_tweets
+#' @param tema string com a(s) palavra(s)-chave utilizadas na coleta dos tweets
+#'
+#' @return gráfico ggplot
+#'
+#' @export
 qtd_tw_tempo <- function(tw, tema) {
   data_ini <- format(min(tw$created_at), "%d/%m/%Y")
   data_fim <- format(max(tw$created_at), "%d/%m/%Y")
@@ -17,8 +21,14 @@ qtd_tw_tempo <- function(tw, tema) {
     ggplot2::theme_minimal()
 }
 
-# Hashtags mais compartilhadas
 
+#' Hashtags mais compartilhadas
+#'
+#' @param tw base limpa de tweets criada usando tidy_tweets
+#'
+#' @return df com 50 hashtags mais usadas e quantidade de vezes que foram compartilhadas
+#'
+#' @export
 tw_hashtags <- function(tw) {
   tw %>%
     dplyr::filter(!is.na(hashtags)) %>%
@@ -28,7 +38,13 @@ tw_hashtags <- function(tw) {
 }
 
 
-# urls mais compartilhadas
+#' URLs mais compartilhadas
+#'
+#' @param tw base limpa de tweets criada usando tidy_tweets
+#'
+#' @return df com 50 URLs mais citadas e quantidade de vezes que foram compartilhadas
+#'
+#' @export
 tw_urls <- function(tw) {
   tw %>%
   dplyr::filter(!is.na(urls_url)) %>%
