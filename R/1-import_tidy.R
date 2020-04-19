@@ -13,7 +13,7 @@ tidy_tweets <- function(arquivo_csv, path_tidy = "data") {
     dplyr::select(ends_with("id"), created_at, screen_name, starts_with("is"),
            text, hashtags, urls_url, media_url, media_type, status_url,
            account_created_at, verified) %>%
-    dplyr::mutate(created_at = lubridate::force_tz(lubridate::as_datetime(created_at), "America/Sao_Paulo"))
+    dplyr::mutate(created_at = lubridate::with_tz(lubridate::as_datetime(created_at), "America/Sao_Paulo"))
 
   # checa se id é única
   n_idunico <- tweets %>% dplyr::count(status_id) %>% dplyr::filter(n > 1) %>% nrow()

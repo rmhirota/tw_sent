@@ -41,6 +41,9 @@ tw_sent_base <- function(tw) {
     )
 
   cat(sprintf("%s dos tweets categorizados", scales::percent(nrow(tweets_unnested)/nrow(tw))))
+
+  tweets_unnested <- tweets_unnested %>% filter(abs(tw_sentiment_op - tw_sentiment_lex) <= 5)
+
   return(tweets_unnested)
 }
 
@@ -59,7 +62,7 @@ tw_pos_neg <- function(tweets, tw_sent, sent = "positivo") {
     head(10) %>%
     dplyr::pull(id)
   most_neg <- tw_sent %>%
-    dplyr::arrange(most_pos) %>%
+    dplyr::arrange(most_neg) %>%
     head(10) %>%
     dplyr::pull(id)
   if (sent == "positivo") {sent <- most_pos} else {sent <- most_neg}
@@ -82,8 +85,8 @@ agrupa_tw_sent <- function(tweets, tw_sent, path_arq = "data/tw_fim") {
   tweets %>%
   dplyr::inner_join(
     tw_sent %>% dplyr::select(id, sentiment = tw_sentiment_op),
-    by = "id")
-  readr::write_rds(tw_fim, sprintf("%s.rds", path_arq))
+    by = "id") %>%
+  readr::write_rds(sprintf("%s.rds", path_arq))
 }
 
 
